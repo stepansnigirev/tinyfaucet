@@ -10,6 +10,41 @@ app = Flask(__name__, template_folder="templates", static_folder="static")
 rand = os.urandom(5).hex()
 fallbackaddr = None
 
+def sendtoaddress(address, amount, wallet=None):
+    w = wallet
+    if w is None:
+        w = rpc.wallet("")
+    extra_inputs = []
+    trusted_balance = w.getbalances()["mine"]["trusted"]
+    total_in = 0
+    inputs = []
+    if trusted_balance < amount:
+        txlist = self.cli.listunspent(0,0)
+        b = amount-trusted_balance
+        for tx in txlist:
+            extra_inputs.append({"txid": tx["txid"], "vout": tx["vout"]})
+            inputs.append(tx)
+            b -= tx["amount"]
+            total_in += tx["amount"]
+            if b < 0:
+                break
+
+    psbt = w.walletcreatefundedpsbt(
+        extra_inputs,           # inputs
+        [{address: amount}],    # output
+        0,                      # locktime
+        {},                     # options
+        True                    # replaceable
+    )["psbt"]
+    print(psbt)
+    psbt = w.walletprocesspsbt(psbt)["psbt"]
+    print(psbt)
+    res = w.finalizepsbt(psbt)
+    print(res)
+    tx = res["hex"]
+    w.sendrawtransaction(tx)
+    return tx
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     global fallbackaddr
@@ -29,10 +64,9 @@ def index():
             action = request.form['action']
             if action == "getfunds":
                 addr = request.form['btcaddress']
-                txid = w.sendtoaddress(addr, 0.1)
-                tx = w.getrawtransaction(txid)
+                tx = sendtoaddress(addr, 0.1)
                 decoded = w.decoderawtransaction(tx)
-                result = {"txid": txid, "rawtx": tx, "decoded": decoded}
+                result = {"rawtx": tx, "decoded": decoded}
                 kwargs["result"] = json.dumps(result,indent=4)
             elif action == "broadcast":
                 rawtx = request.form['rawtx']
