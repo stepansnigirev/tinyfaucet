@@ -35,6 +35,21 @@
 				<button type="submit" name="action" value="getfunds" class="btn centered">Get some funds</button>
 			</div>
 		</form>
+
+		<br><br><br>
+		<h1>Broadcast transaction</h1>
+		<div class="note">
+			<center>
+				Paste raw hex transaction here and we will try to broadcast it.
+			</center>
+		</div>
+		<form action="./" method="POST">
+			<div>
+				<input type="text" placeholder="0200..." name="rawtx">
+				<button type="submit" name="action" value="broadcast" class="btn centered">Broadcast</button>
+			</div>
+		</form>
+		<br><br><br>
 		{% if result %}
 		<div style="margin-top: 30px" class="log"><code><pre>{{result}}</pre></code></div>
 		{% endif %}

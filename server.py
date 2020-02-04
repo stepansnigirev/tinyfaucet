@@ -34,6 +34,12 @@ def index():
                 decoded = w.decoderawtransaction(tx)
                 result = {"txid": txid, "rawtx": tx, "decoded": decoded}
                 kwargs["result"] = json.dumps(result,indent=4)
+            elif action == "broadcast":
+                rawtx = request.form['rawtx']
+                decoded = w.decoderawtransaction(rawtx)
+                res = w.sendrawtransaction(rawtx)
+                result = {"decoded": decoded}
+                kwargs["result"] = json.dumps(result,indent=4)
         except Exception as e:
             error = "%r" % e
             return render_template("index.html", error=error, **kwargs)
