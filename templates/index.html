@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="shortcut icon" type="image/png" href="/static/img/icon.png"/>
+	<title>Specter Desktop</title>
+	<link rel="stylesheet" type="text/css" href="/static/styles.css?{{rand}}">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+<body>
+<div class="row holder">
+	<main>
+		{% if error %}
+		<div class="notification error">
+			ERROR: {{error}}
+		</div>
+		{% endif %}
+
+		{% block main %}
+
+		<h1>Signet-Taproot faucet</h1>
+		<div class="note">
+			<center>
+				Enter your signet address here to get some funds.<br>
+				As an output you will get full raw transaction that was sent to you.
+			</center>
+		</div>
+		<form action="./" method="POST">
+			<div>
+				<input type="text" placeholder="sb1p..." name="btcaddress">
+				<div class="note">
+					<center>
+						<br>Send the money back to <b>{{fallbackaddr}}</b> when you don't need them.
+					</center>
+				</div>
+				<button type="submit" name="action" value="getfunds" class="btn centered">Get some funds</button>
+			</div>
+		</form>
+		{% if result %}
+		<div style="margin-top: 30px" class="log"><code><pre>{{result}}</pre></code></div>
+		{% endif %}
+
+		{% endblock %}
+	</main>
+</div>
+{% block scripts %}
+{% endblock %}
+</body>
+</html>
