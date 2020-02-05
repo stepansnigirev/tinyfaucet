@@ -3,7 +3,7 @@ from rpc import BitcoinCLI
 import os, json
 
 # put your credentials here:
-rpc = BitcoinCLI("specter","TruckWordTrophySolidVintageFieldGalaxyOrphanSeek",port=18443)
+rpc = BitcoinCLI("rpcuser","rpcpassword",port=38443)
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 
